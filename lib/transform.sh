@@ -99,10 +99,10 @@ PYEOF
 }
 
 # =============================================================================
-# AGENTS: Kiro (create agents/*.json files in kiro format)
+# AGENTS: Kiro (create agents/*.md files in markdown format)
 # =============================================================================
 
-# Transform bundle agent JSON files into Kiro-compatible agent configs.
+# Transform bundle agent JSON files into Kiro-compatible agent markdown configs.
 # Usage: install_agents_kiro <bundle_agents_dir> <kiro_agents_dir>
 install_agents_kiro() {
   local src="$1"   # e.g. $BUNDLE_DIR/agents
@@ -116,7 +116,7 @@ install_agents_kiro() {
 
     local agent_name
     agent_name="$(python3 -c "import json,sys; d=json.load(open('$agent_file')); print(d['name'])")"
-    local kiro_file="$dst/${agent_name}.json"
+    local kiro_file="$dst/${agent_name}.md"
 
     if [[ -f "$kiro_file" ]]; then
       backup_if_exists "$kiro_file"
@@ -136,26 +136,37 @@ dst_path = sys.argv[2]
 with open(src_path) as f:
     src = json.load(f)
 
-# Kiro agent_config.json format
-kiro = {
-    "name":           src.get("name", ""),
-    "description":    src.get("description", ""),
-    "tools":          list(src.get("tools", {}).keys()) if isinstance(src.get("tools"), dict) else ["read", "write", "shell"],
-    "allowedTools":   [],
-    "resources":      [
-        "file://.kiro/steering/**/*.md",
-        "skill://.kiro/skills/**/SKILL.md"
-    ],
-    "prompt":         src.get("prompt", "")
-}
+name = src.get("name", "Unknown Agent")
+desc = src.get("description", "")
+desc_escaped = desc.replace('"', '\\"')
+prompt = src.get("prompt", "")
+
+tools = src.get("tools", [])
+if isinstance(tools, dict):
+    tools = list(tools.keys())
+tools_str = ", ".join(tools)
+
+tools_yaml = ""
+if tools_str:
+    tools_yaml = f"tools: {tools_str}\n"
+
+model_line = ""
 if "model" in src:
-    kiro["model"] = src["model"]
-elif "model" in src.get("toolsSettings", {}):
-    kiro["model"] = src["toolsSettings"]["model"]
+    model_line = f"model: {src['model']}\n"
+elif "toolsSettings" in src and "model" in src["toolsSettings"]:
+    model_line = f"model: {src['toolsSettings']['model']}\n"
+
+content = f"""---
+name: {name}
+description: "{desc_escaped}"
+{tools_yaml}{model_line.strip()}
+---
+
+{prompt}
+"""
 
 with open(dst_path, "w") as f:
-    json.dump(kiro, f, indent=2, ensure_ascii=False)
-    f.write("\n")
+    f.write(content)
 PYEOF
     log_ok "Created Kiro agent: $agent_name"
   done

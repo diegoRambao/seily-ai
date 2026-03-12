@@ -2,13 +2,14 @@
 # adapters/kiro.sh — Adapter for Kiro (AWS IDE)
 #
 # Global:
-#   ~/.kiro/agents/<name>.json    (Kiro agent_config.json format)
+#   ~/.kiro/agents/<name>.md      (Kiro agent markdown format)
 #   ~/.kiro/skills/<name>/SKILL.md
 #   ~/.kiro/steering/sdd.md       (Steering document with SDD overview)
 #
 # Project:
-#   .kiro/skills/      → symlink to $BUNDLE_DIR/skills
-#   .kiro/steering/    → generated SDD steering doc
+#   .kiro/agents/<name>.md  → agent markdown files
+#   .kiro/skills/           → symlink to $BUNDLE_DIR/skills
+#   .kiro/steering/         → generated SDD steering doc
 
 KIRO_DIR="$HOME/.kiro"
 
