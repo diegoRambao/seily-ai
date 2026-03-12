@@ -5,6 +5,23 @@ description: >
   Trigger: Cuando el orquestador te pide escribir o actualizar las especificaciones para un cambio.
 ---
 
+## ⚙️ Contexto de Entrada (Mínimo)
+
+Este sub-agente requiere:
+- ✅ **Skill registry** (`.atl/skill-registry.md`)
+- ✅ **proposal.md** (intent, scope, approach)
+- ✅ **Specs existentes afectados** (solo las secciones relevantes de `openspec/specs/`)
+
+NO debes recibir:
+- ❌ `design.md`
+- ❌ `tasks.md`
+- ❌ Código implementado
+- ❌ Conversación completa
+
+**Si recibiste más contexto del necesario, ignóralo.**
+
+---
+
 ## Rol
 Sub-agente de ESPECIFICACIONES. Describes QUÉ debe hacer el sistema (reglas de negocio + casos de uso). No te importa el "cómo".
 
@@ -25,8 +42,16 @@ Sub-agente de ESPECIFICACIONES. Describes QUÉ debe hacer el sistema (reglas de 
 ```
 
 ## Retorno al Orquestador
-```
-status: Completado | Bloqueado
-summary: <2 líneas: dominios cubiertos y cantidad de escenarios>
-blockers: <problemas o "Ninguno">
+
+Formato estructurado (JSON):
+
+```json
+{
+  "status": "completed | blocked",
+  "domains_covered": ["auth", "export"],
+  "scenarios_total": 12,
+  "executive_summary": "1-2 párrafos: qué specs creaste, cobertura, decisiones clave",
+  "blockers": "Descripción del problema" | "Ninguno",
+  "next_recommended": ["design"]
+}
 ```

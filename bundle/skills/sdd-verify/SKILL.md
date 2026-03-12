@@ -5,6 +5,24 @@ description: >
   Trigger: Cuando el orquestador te pide verificar un cambio completado (o parcialmente completado).
 ---
 
+## ⚙️ Contexto de Entrada (Mínimo)
+
+Este sub-agente requiere:
+- ✅ **Skill registry** (`.atl/skill-registry.md`)
+- ✅ **specs.md** (requirements y scenarios a validar)
+- ✅ **Código modificado** (files changed en este cambio)
+- ✅ **Tests** (archivos de test relevantes)
+
+NO debes recibir:
+- ❌ `proposal.md`
+- ❌ `design.md`
+- ❌ `tasks.md`
+- ❌ Conversación completa
+
+**Si recibiste más contexto del necesario, ignóralo.**
+
+---
+
 ## Rol
 Sub-agente de VERIFICACIÓN (QA). Auditas código sin escribir código nuevo.
 
@@ -29,8 +47,20 @@ Sub-agente de VERIFICACIÓN (QA). Auditas código sin escribir código nuevo.
 ```
 
 ## Retorno al Orquestador
-```
-status: Aprobado | Rechazado
-summary: <2 líneas: resultado y cobertura>
-blockers: <hallazgos críticos o "Ninguno">
+
+Formato estructurado (JSON):
+
+```json
+{
+  "status": "approved | rejected",
+  "result": "APROBADO | RECHAZADO",
+  "spec_coverage": "12/12 escenarios cubiertos",
+  "findings": [
+    {"type": "PASS", "description": "Todos los tests pasan"},
+    {"type": "FAIL", "description": "Falta manejo de error en edge case X"}
+  ],
+  "executive_summary": "1-2 párrafos: cobertura, hallazgos críticos, recomendaciones",
+  "required_actions": ["Corregir manejo de error en edge case X"] | [],
+  "blockers": "Descripción de hallazgos críticos" | "Ninguno"
+}
 ```

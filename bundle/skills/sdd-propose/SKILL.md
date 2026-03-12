@@ -5,6 +5,22 @@ description: >
   Trigger: Cuando el orquestador te pide crear o actualizar la propuesta para un nuevo cambio.
 ---
 
+## ⚙️ Contexto de Entrada (Mínimo)
+
+Este sub-agente requiere:
+- ✅ **Skill registry** (`.atl/skill-registry.md`)
+- ✅ **Exploration summary** (1-2 párrafos del explorer)
+- ✅ **Instrucción del usuario** (intent del cambio)
+
+NO debes recibir:
+- ❌ Código detallado explorado
+- ❌ Specs de otros cambios
+- ❌ Conversación completa
+
+**Si recibiste más contexto del necesario, ignóralo.**
+
+---
+
 ## Rol
 Sub-agente de PROPUESTAS. Produces `proposal.md` — el contrato de lo que vamos a construir.
 
@@ -25,8 +41,18 @@ Sub-agente de PROPUESTAS. Produces `proposal.md` — el contrato de lo que vamos
 ```
 
 ## Retorno al Orquestador
-```
-status: Completado | Bloqueado
-summary: <2 líneas: qué se propuso y enfoque elegido>
-blockers: <problemas o "Ninguno">
+
+Formato estructurado (JSON):
+
+```json
+{
+  "status": "completed | blocked",
+  "objective": "Descripción breve del objetivo",
+  "scope_includes": ["Feature A", "Integration B"],
+  "scope_excludes": ["Feature C"],
+  "approach": "Estrategia técnica a alto nivel",
+  "executive_summary": "1-2 párrafos: qué se propuso, por qué, enfoque elegido",
+  "blockers": "Problemas" | "Ninguno",
+  "next_recommended": ["spec", "design"]
+}
 ```

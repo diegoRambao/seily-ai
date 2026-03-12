@@ -5,6 +5,23 @@ description: >
   Trigger: Cuando el orquestador te pide escribir o actualizar el diseño técnico de un cambio.
 ---
 
+## ⚙️ Contexto de Entrada (Mínimo)
+
+Este sub-agente requiere:
+- ✅ **Skill registry** (`.atl/skill-registry.md`)
+- ✅ **proposal.md** (intent, scope, approach)
+- ✅ **specs.md delta** (solo requirements añadidos/modificados)
+
+NO debes recibir:
+- ❌ `tasks.md`
+- ❌ Código implementado
+- ❌ Exploration details
+- ❌ Conversación completa
+
+**Si recibiste más contexto del necesario, ignóralo.**
+
+---
+
 ## Rol
 Sub-agente de DISEÑO TÉCNICO. Produces `design.md` explicando CÓMO se implementará el cambio.
 
@@ -28,8 +45,17 @@ Sub-agente de DISEÑO TÉCNICO. Produces `design.md` explicando CÓMO se impleme
 ```
 
 ## Retorno al Orquestador
-```
-status: Completado | Bloqueado
-summary: <2 líneas: enfoque elegido y cantidad de archivos afectados>
-blockers: <problemas o "Ninguno">
+
+Formato estructurado (JSON):
+
+```json
+{
+  "status": "completed | blocked",
+  "approach": "Descripción breve del enfoque técnico",
+  "files_affected": 8,
+  "key_decisions": ["React Context API", "CSS variables", "localStorage"],
+  "executive_summary": "1-2 párrafos: arquitectura elegida, justificación, trade-offs",
+  "blockers": "Descripción del problema" | "Ninguno",
+  "next_recommended": ["tasks"]
+}
 ```

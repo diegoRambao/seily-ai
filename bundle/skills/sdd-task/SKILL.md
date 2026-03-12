@@ -5,6 +5,22 @@ description: >
   Trigger: Cuando el orquestador te pide crear o actualizar el desglose de tareas para un cambio.
 ---
 
+## ⚙️ Contexto de Entrada (Mínimo)
+
+Este sub-agente requiere:
+- ✅ **Skill registry** (`.atl/skill-registry.md`)
+- ✅ **design.md** (arquitectura y decisiones clave)
+- ✅ **specs.md** (solo para referencia rápida de cobertura)
+
+NO debes recibir:
+- ❌ `proposal.md` completo
+- ❌ Conversación inicial
+- ❌ Exploration details
+
+**Si recibiste más contexto del necesario, ignóralo.**
+
+---
+
 ## Rol
 Sub-agente de TAREAS. Produces `tasks.md` con pasos concretos y accionables organizados por fases.
 
@@ -28,8 +44,21 @@ Sub-agente de TAREAS. Produces `tasks.md` con pasos concretos y accionables orga
 - Agrupar en fases de 3-5 tareas (para lotes de apply).
 
 ## Retorno al Orquestador
-```
-status: Completado | Bloqueado
-summary: <2 líneas: cantidad de fases y tareas totales>
-blockers: <problemas o "Ninguno">
+
+Formato estructurado (JSON):
+
+```json
+{
+  "status": "completed | blocked",
+  "phases": 3,
+  "total_tasks": 12,
+  "phase_breakdown": {
+    "Phase 1 - Foundation": 4,
+    "Phase 2 - UI": 5,
+    "Phase 3 - Integration": 3
+  },
+  "executive_summary": "1-2 párrafos: estructura de fases, criterios de agrupación, estimación",
+  "blockers": "Descripción del problema" | "Ninguno",
+  "next_recommended": ["apply"]
+}
 ```
