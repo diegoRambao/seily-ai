@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # lib/menu.sh — Interactive checkbox menus for tool and scope selection.
-# Sourced by install.sh. Do NOT execute directly.
+# Compatible with Bash 3.2+ (macOS default). No namerefs used.
 #
 # Exports after show_scope_menu():
 #   SCOPE_GLOBAL  (true|false)
@@ -19,96 +19,84 @@
 # INTERNAL HELPERS
 # =============================================================================
 
-# _draw_menu <title> <subtitle> <labels_array_nameref> <selected_array_nameref> [<detected_array_nameref>]
-# Draws a checkbox list. Uses terminal escape codes to redraw in-place.
-# Returns when the user presses Enter (empty input).
-_draw_checkbox_list() {
-  local -n _labels="$1"
-  local -n _selected="$2"
-  local -n _detected="$3"
-  local count=${#_labels[@]}
-
-  for i in "${!_labels[@]}"; do
-    local mark det_marker=""
-    if [[ "${_selected[$i]}" == "true" ]]; then
-      mark="${GREEN}[x]${NC}"
-    else
-      mark="[ ]"
-    fi
-    if [[ "${_detected[$i]}" == "true" ]]; then
-      det_marker=" ${DIM}(detected)${NC}"
-    fi
-    printf "  %s ${BOLD}%d.${NC} %s%s\n" "$mark" "$((i + 1))" "${_labels[$i]}" "$det_marker"
-  done
-  echo ""
-  echo -e "  ${DIM}a${NC} = all   ${DIM}n${NC} = none   ${DIM}1-${count}${NC} = toggle"
-}
-
 # _erase_lines <count>
 _erase_lines() {
-  local n="$1"
+  local n="$1" i
   for (( i=0; i<n; i++ )); do
     printf "\033[A\033[2K"
   done
 }
 
-# Generic multi-select menu.
-# Usage: _multi_select <title> <prompt> <labels_nameref> <selected_nameref> <detected_nameref>
-_multi_select() {
-  local title="$1"
-  local prompt="$2"
-  local labels_ref="$3"
-  local selected_ref="$4"
-  local detected_ref="$5"
-
-  local -n _ms_labels="$labels_ref"
-  local -n _ms_selected="$selected_ref"
-  local -n _ms_detected="$detected_ref"
-
-  local count=${#_ms_labels[@]}
-  # lines: count items + 1 empty + 1 hint line
-  local menu_height=$(( count + 2 ))
+# _draw_menu <title> <hint>
+# Uses global arrays: _MENU_LABELS, _MENU_SELECTED, _MENU_DETECTED
+_draw_menu() {
+  local title="$1" hint="$2"
+  local count="${#_MENU_LABELS[@]}" i mark det_marker
 
   echo -e "${BOLD}${title}${NC}"
-  echo -e "${DIM}${prompt}${NC}"
+  echo -e "${DIM}${hint}${NC}"
   echo ""
 
-  _draw_checkbox_list "$labels_ref" "$selected_ref" "$detected_ref"
+  for (( i=0; i<count; i++ )); do
+    if [[ "${_MENU_SELECTED[$i]}" == "true" ]]; then
+      mark="${GREEN}[x]${NC}"
+    else
+      mark="[ ]"
+    fi
+    det_marker=""
+    if [[ "${_MENU_DETECTED[$i]}" == "true" ]]; then
+      det_marker=" ${DIM}(detected)${NC}"
+    fi
+    printf "  %b ${BOLD}%d.${NC} %s%b\n" "$mark" "$((i+1))" "${_MENU_LABELS[$i]}" "$det_marker"
+  done
+
+  echo ""
+  echo -e "  ${DIM}a${NC} = all   ${DIM}n${NC} = none   ${DIM}1-${count}${NC} = toggle"
+}
+
+# _run_menu <title> <hint>
+# Modifies global _MENU_SELECTED in place. Bash 3.2 compatible.
+_run_menu() {
+  local title="$1" hint="$2"
+  local count="${#_MENU_LABELS[@]}"
+  # header(title+hint+blank) + items + blank + hint line = count+4
+  local menu_height=$(( count + 4 ))
+  local choice num idx
+
+  _draw_menu "$title" "$hint"
 
   while true; do
     printf "  Toggle: "
-    local choice
     read -r choice
 
-    # Erase the prompt line + menu lines
+    # Erase prompt line + full menu
     _erase_lines $(( menu_height + 1 ))
 
     case "$choice" in
       a|A)
-        for i in "${!_ms_selected[@]}"; do _ms_selected[$i]=true; done
+        for (( i=0; i<count; i++ )); do _MENU_SELECTED[$i]=true; done
         ;;
       n|N)
-        for i in "${!_ms_selected[@]}"; do _ms_selected[$i]=false; done
+        for (( i=0; i<count; i++ )); do _MENU_SELECTED[$i]=false; done
         ;;
       "")
         break
         ;;
       *)
-        # Support space-separated numbers: "1 3 5"
         for num in $choice; do
           if [[ "$num" =~ ^[0-9]+$ ]] && (( num >= 1 && num <= count )); then
-            local idx=$(( num - 1 ))
-            if [[ "${_ms_selected[$idx]}" == "true" ]]; then
-              _ms_selected[$idx]=false
+            idx=$(( num - 1 ))
+            if [[ "${_MENU_SELECTED[$idx]}" == "true" ]]; then
+              _MENU_SELECTED[$idx]=false
             else
-              _ms_selected[$idx]=true
+              _MENU_SELECTED[$idx]=true
             fi
           fi
         done
         ;;
     esac
 
-    _draw_checkbox_list "$labels_ref" "$selected_ref" "$detected_ref"
+    _draw_menu "$title" "$hint"
   done
 }
 
@@ -117,19 +105,20 @@ _multi_select() {
 # =============================================================================
 
 show_scope_menu() {
-  local labels=("Global (applies to all projects)" "Project (current directory only)")
-  local detected=(false false)
-  # Default: both selected
-  local selected=(true true)
+  _MENU_LABELS=(
+    "Global (applies to all projects)"
+    "Project (current directory only)"
+  )
+  _MENU_SELECTED=(true true)
+  _MENU_DETECTED=(false false)
 
   echo ""
-  _multi_select \
+  _run_menu \
     "Where do you want to install?" \
-    "Global = tool config dirs (~/.config/opencode, ~/.claude, ~/.kiro, etc.)" \
-    labels selected detected
+    "Global = tool config dirs (~/.config/opencode, ~/.claude, ~/.kiro, etc.)"
 
-  SCOPE_GLOBAL="${selected[0]}"
-  SCOPE_PROJECT="${selected[1]}"
+  SCOPE_GLOBAL="${_MENU_SELECTED[0]}"
+  SCOPE_PROJECT="${_MENU_SELECTED[1]}"
 }
 
 # =============================================================================
@@ -137,12 +126,9 @@ show_scope_menu() {
 # =============================================================================
 
 show_tools_menu() {
-  # Run detection first if not done yet
-  if [[ -z "$OPENCODE_INSTALLED" ]]; then
-    detect_tools
-  fi
+  [[ -z "$OPENCODE_INSTALLED" ]] && detect_tools
 
-  local labels=(
+  _MENU_LABELS=(
     "OpenCode           (~/.config/opencode/)"
     "Claude Code        (~/.claude/)"
     "Kiro (AWS)         (~/.kiro/)"
@@ -151,8 +137,7 @@ show_tools_menu() {
     "Cursor             (~/.cursor/)"
     "Gemini CLI         (~/.gemini/)"
   )
-
-  local detected=(
+  _MENU_DETECTED=(
     "$OPENCODE_INSTALLED"
     "$CLAUDE_INSTALLED"
     "$KIRO_INSTALLED"
@@ -161,9 +146,8 @@ show_tools_menu() {
     "$CURSOR_INSTALLED"
     "$GEMINI_INSTALLED"
   )
-
   # Pre-select detected tools
-  local selected=(
+  _MENU_SELECTED=(
     "$OPENCODE_INSTALLED"
     "$CLAUDE_INSTALLED"
     "$KIRO_INSTALLED"
@@ -173,30 +157,28 @@ show_tools_menu() {
     "$GEMINI_INSTALLED"
   )
 
-  # Ensure at least OpenCode is selected if nothing detected
+  # If nothing detected, default to OpenCode
   local any=false
-  for s in "${selected[@]}"; do [[ "$s" == "true" ]] && { any=true; break; }; done
-  if [[ "$any" == "false" ]]; then
-    selected[0]=true  # Default to OpenCode
-  fi
+  local s
+  for s in "${_MENU_SELECTED[@]}"; do [[ "$s" == "true" ]] && { any=true; break; }; done
+  [[ "$any" == "false" ]] && _MENU_SELECTED[0]=true
 
   echo ""
-  _multi_select \
+  _run_menu \
     "Which AI tools do you want to configure?" \
-    "Detected tools are pre-selected. Toggle to customize." \
-    labels selected detected
+    "Detected tools are pre-selected. Toggle to customize."
 
-  SETUP_OPENCODE="${selected[0]}"
-  SETUP_CLAUDE="${selected[1]}"
-  SETUP_KIRO="${selected[2]}"
-  SETUP_COPILOT="${selected[3]}"
-  SETUP_ANTIGRAVITY="${selected[4]}"
-  SETUP_CURSOR="${selected[5]}"
-  SETUP_GEMINI="${selected[6]}"
+  SETUP_OPENCODE="${_MENU_SELECTED[0]}"
+  SETUP_CLAUDE="${_MENU_SELECTED[1]}"
+  SETUP_KIRO="${_MENU_SELECTED[2]}"
+  SETUP_COPILOT="${_MENU_SELECTED[3]}"
+  SETUP_ANTIGRAVITY="${_MENU_SELECTED[4]}"
+  SETUP_CURSOR="${_MENU_SELECTED[5]}"
+  SETUP_GEMINI="${_MENU_SELECTED[6]}"
 }
 
 # =============================================================================
-# CONFIRMATION SUMMARY
+# PLAN SUMMARY & CONFIRMATION
 # =============================================================================
 
 print_plan() {
@@ -204,14 +186,14 @@ print_plan() {
   log_section "Installation plan:"
   echo ""
 
-  # Scope
   local scope_parts=()
-  [[ "$SCOPE_GLOBAL" == "true" ]]  && scope_parts+=("global")
+  [[ "$SCOPE_GLOBAL"  == "true" ]] && scope_parts+=("global")
   [[ "$SCOPE_PROJECT" == "true" ]] && scope_parts+=("project ($(basename "$(pwd)"))")
-  echo -e "  ${BOLD}Scope:${NC} $(IFS=', '; echo "${scope_parts[*]}")"
+  local IFS=', '
+  echo -e "  ${BOLD}Scope:${NC} ${scope_parts[*]}"
+  unset IFS
   echo ""
 
-  # Tools
   echo -e "  ${BOLD}Tools:${NC}"
   [[ "$SETUP_OPENCODE"    == "true" ]] && echo -e "    ${GREEN}✓${NC} OpenCode"
   [[ "$SETUP_CLAUDE"      == "true" ]] && echo -e "    ${GREEN}✓${NC} Claude Code"
@@ -221,7 +203,6 @@ print_plan() {
   [[ "$SETUP_CURSOR"      == "true" ]] && echo -e "    ${GREEN}✓${NC} Cursor"
   [[ "$SETUP_GEMINI"      == "true" ]] && echo -e "    ${GREEN}✓${NC} Gemini CLI"
 
-  # Bundle contents
   echo ""
   echo -e "  ${BOLD}Bundle contents:${NC}"
   if [[ -n "$BUNDLE_DIR" && -d "$BUNDLE_DIR/skills" ]]; then
