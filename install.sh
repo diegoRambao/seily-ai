@@ -53,11 +53,29 @@ _install_from_remote() {
   # this process. A cleanup trap on EXIT would fire before exec finishes.
   # The OS reclaims the temp dir on process exit naturally.
 
+  # Resolve the latest commit SHA via GitHub API to bypass CDN cache on
+  # raw.githubusercontent.com and /archive/refs/heads/main.tar.gz.
+  # The per-commit tarball URL is never cached.
+  local sha=""
+  if command -v curl &>/dev/null; then
+    sha=$(curl -fsSL "https://api.github.com/repos/diegoRambao/ai-env-setup/commits/main" \
+      2>/dev/null | python3 -c "import json,sys; print(json.load(sys.stdin)['sha'][:7])" 2>/dev/null || true)
+  fi
+
   # Prefer curl tarball (works without auth on public repos).
   # Fall back to git clone only if curl is unavailable.
   if command -v curl &>/dev/null; then
-    curl -fsSL "$REPO_URL/archive/refs/heads/main.tar.gz" | tar xz -C "$tmp_dir"
-    mv "$tmp_dir"/ai-env-setup-main "$tmp_dir/ai-env-setup"
+    local tarball_url
+    if [[ -n "$sha" ]]; then
+      tarball_url="$REPO_URL/archive/${sha}.tar.gz"
+    else
+      tarball_url="$REPO_URL/archive/refs/heads/main.tar.gz"
+    fi
+    curl -fsSL "$tarball_url" | tar xz -C "$tmp_dir"
+    # GitHub names the extracted dir as "<repo>-<sha_or_branch>"
+    local extracted
+    extracted=$(ls "$tmp_dir" | head -1)
+    mv "$tmp_dir/$extracted" "$tmp_dir/ai-env-setup"
   elif command -v git &>/dev/null; then
     git clone --depth=1 --quiet "$REPO_URL.git" "$tmp_dir/ai-env-setup"
   else
