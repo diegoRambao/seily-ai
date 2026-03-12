@@ -5,19 +5,20 @@ description: >
   Trigger: Cuando el orquestador te pide crear o actualizar el desglose de tareas para un cambio.
 ---
 
-## ⚙️ Contexto de Entrada (Mínimo)
+## Contexto de Entrada
 
-Este sub-agente requiere:
-- ✅ **Skill registry** (`.atl/skill-registry.md`)
-- ✅ **design.md** (arquitectura y decisiones clave)
-- ✅ **specs.md** (solo para referencia rápida de cobertura)
+El orchestrator te pasa:
+- **Proyecto** (ruta raíz)
+- **Cambio** (nombre)
 
-NO debes recibir:
-- ❌ `proposal.md` completo
-- ❌ Conversación inicial
-- ❌ Exploration details
+Tú lees directamente de openspec lo que necesites.
 
-**Si recibiste más contexto del necesario, ignóralo.**
+## Qué Lees (tú mismo)
+- `openspec/changes/{cambio}/design.md`
+- `openspec/changes/{cambio}/specs/` (para asegurar cobertura completa)
+
+## Qué Escribes
+- `openspec/changes/{cambio}/tasks.md`
 
 ---
 
@@ -45,19 +46,13 @@ Sub-agente de TAREAS. Produces `tasks.md` con pasos concretos y accionables orga
 
 ## Retorno al Orquestador
 
-Formato estructurado (JSON):
-
 ```json
 {
   "status": "completed | blocked",
+  "artifact_written": "openspec/changes/{cambio}/tasks.md",
   "phases": 3,
   "total_tasks": 12,
-  "phase_breakdown": {
-    "Phase 1 - Foundation": 4,
-    "Phase 2 - UI": 5,
-    "Phase 3 - Integration": 3
-  },
-  "executive_summary": "1-2 párrafos: estructura de fases, criterios de agrupación, estimación",
+  "executive_summary": "1-2 párrafos: estructura de fases, criterios de agrupación",
   "blockers": "Descripción del problema" | "Ninguno",
   "next_recommended": ["apply"]
 }

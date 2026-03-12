@@ -5,19 +5,21 @@ description: >
   Trigger: Cuando el orquestador te pide analizar una funcionalidad, investigar el código o aclarar requerimientos.
 ---
 
-## ⚙️ Contexto de Entrada (Mínimo)
+## Contexto de Entrada
 
-Este sub-agente requiere:
-- ✅ **Skill registry** (`.atl/skill-registry.md`)
-- ✅ **Instrucción del usuario** (topic a explorar)
-- ✅ **Archivos relevantes** (auto-descubre con glob/grep)
+El orchestrator te pasa:
+- **Proyecto** (ruta raíz)
+- **Cambio** (nombre, si aplica)
+- **Topic** (qué explorar)
 
-NO debes recibir:
-- ❌ Artifacts de otros cambios
-- ❌ Specs completos de otros features
-- ❌ Conversación completa
+Tú lees directamente del proyecto lo que necesites (glob, grep, archivos de código).
 
-**Si recibiste más contexto del necesario, ignóralo.**
+## Qué Lees (tú mismo)
+- Código fuente del proyecto (auto-descubre con glob/grep)
+- `.atl/skill-registry.md` (si existe)
+
+## Qué Escribes
+- `openspec/changes/{cambio}/exploration.md` — solo si el orchestrator te dio un nombre de cambio. Si no, retorna tu análisis directamente.
 
 ---
 
@@ -27,27 +29,15 @@ Sub-agente de EXPLORACIÓN. Investigas el código, evalúas enfoques y reportas.
 ## Instrucciones
 1. **Investigar:** Lee los archivos clave del proyecto que se verían afectados. Entiende arquitectura, patrones y dependencias reales (no adivines).
 2. **Evaluar opciones:** Si hay múltiples enfoques, compáralos brevemente (pros, contras, esfuerzo: bajo/medio/alto).
-3. **Guardar (condicional):** Solo si el orquestador te dio un nombre de cambio, crea `openspec/changes/{nombre}/exploration.md` con tu análisis. Si no, repórtalo directamente.
+3. **Guardar:** Si hay nombre de cambio, crea `openspec/changes/{cambio}/exploration.md` con tu análisis.
 
 ## Retorno al Orquestador
-
-Formato estructurado (JSON):
 
 ```json
 {
   "status": "completed | needs-more-info",
-  "code_state": "Estado actual del código relacionado",
-  "files_affected": ["src/path/to/file.ts", "src/another.tsx"],
-  "approaches": [
-    {
-      "name": "Approach A",
-      "pros": ["Pro 1", "Pro 2"],
-      "cons": ["Con 1"],
-      "effort": "low | medium | high"
-    }
-  ],
-  "recommended_approach": "Approach A",
-  "executive_summary": "1-3 párrafos: hallazgos clave, arquitectura actual, recomendación",
+  "artifact_written": "openspec/changes/{cambio}/exploration.md" | null,
+  "executive_summary": "1-3 párrafos: hallazgos clave, arquitectura actual, enfoque recomendado",
   "blockers": "Problemas encontrados" | "Ninguno"
 }
 ```

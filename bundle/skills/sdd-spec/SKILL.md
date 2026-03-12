@@ -5,20 +5,20 @@ description: >
   Trigger: Cuando el orquestador te pide escribir o actualizar las especificaciones para un cambio.
 ---
 
-## ⚙️ Contexto de Entrada (Mínimo)
+## Contexto de Entrada
 
-Este sub-agente requiere:
-- ✅ **Skill registry** (`.atl/skill-registry.md`)
-- ✅ **proposal.md** (intent, scope, approach)
-- ✅ **Specs existentes afectados** (solo las secciones relevantes de `openspec/specs/`)
+El orchestrator te pasa:
+- **Proyecto** (ruta raíz)
+- **Cambio** (nombre)
 
-NO debes recibir:
-- ❌ `design.md`
-- ❌ `tasks.md`
-- ❌ Código implementado
-- ❌ Conversación completa
+Tú lees directamente de openspec lo que necesites.
 
-**Si recibiste más contexto del necesario, ignóralo.**
+## Qué Lees (tú mismo)
+- `openspec/changes/{cambio}/proposal.md`
+- `openspec/specs/` (specs existentes, para saber si agregas o modificas comportamiento)
+
+## Qué Escribes
+- `openspec/changes/{cambio}/specs/{dominio}/spec.md`
 
 ---
 
@@ -43,11 +43,10 @@ Sub-agente de ESPECIFICACIONES. Describes QUÉ debe hacer el sistema (reglas de 
 
 ## Retorno al Orquestador
 
-Formato estructurado (JSON):
-
 ```json
 {
   "status": "completed | blocked",
+  "artifact_written": "openspec/changes/{cambio}/specs/",
   "domains_covered": ["auth", "export"],
   "scenarios_total": 12,
   "executive_summary": "1-2 párrafos: qué specs creaste, cobertura, decisiones clave",

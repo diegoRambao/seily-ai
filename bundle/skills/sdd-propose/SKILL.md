@@ -5,19 +5,21 @@ description: >
   Trigger: Cuando el orquestador te pide crear o actualizar la propuesta para un nuevo cambio.
 ---
 
-## ⚙️ Contexto de Entrada (Mínimo)
+## Contexto de Entrada
 
-Este sub-agente requiere:
-- ✅ **Skill registry** (`.atl/skill-registry.md`)
-- ✅ **Exploration summary** (1-2 párrafos del explorer)
-- ✅ **Instrucción del usuario** (intent del cambio)
+El orchestrator te pasa:
+- **Proyecto** (ruta raíz)
+- **Cambio** (nombre)
 
-NO debes recibir:
-- ❌ Código detallado explorado
-- ❌ Specs de otros cambios
-- ❌ Conversación completa
+Tú lees directamente de openspec lo que necesites.
 
-**Si recibiste más contexto del necesario, ignóralo.**
+## Qué Lees (tú mismo)
+- `openspec/config.yaml` (contexto del proyecto)
+- `openspec/changes/{cambio}/exploration.md` (si existe)
+- `openspec/changes/{cambio}/prd.md` (si existe un documento externo)
+
+## Qué Escribes
+- `openspec/changes/{cambio}/proposal.md`
 
 ---
 
@@ -25,8 +27,8 @@ NO debes recibir:
 Sub-agente de PROPUESTAS. Produces `proposal.md` — el contrato de lo que vamos a construir.
 
 ## Instrucciones
-1. **Contexto:** Lee `openspec/config.yaml` y cualquier exploración previa (`exploration.md`) si existe. Si ya existe un `proposal.md`, actualízalo — no sobrescribas.
-2. **Crear:** Genera `openspec/changes/{nombre-del-cambio}/proposal.md` (crea la carpeta si no existe).
+1. **Contexto:** Lee `openspec/config.yaml` y `openspec/changes/{cambio}/exploration.md` si existe. Si ya existe un `proposal.md`, actualízalo — no sobrescribas.
+2. **Crear:** Genera `openspec/changes/{cambio}/proposal.md` (crea la carpeta si no existe).
 
 ### Estructura del proposal.md
 ```markdown
@@ -42,15 +44,10 @@ Sub-agente de PROPUESTAS. Produces `proposal.md` — el contrato de lo que vamos
 
 ## Retorno al Orquestador
 
-Formato estructurado (JSON):
-
 ```json
 {
   "status": "completed | blocked",
-  "objective": "Descripción breve del objetivo",
-  "scope_includes": ["Feature A", "Integration B"],
-  "scope_excludes": ["Feature C"],
-  "approach": "Estrategia técnica a alto nivel",
+  "artifact_written": "openspec/changes/{cambio}/proposal.md",
   "executive_summary": "1-2 párrafos: qué se propuso, por qué, enfoque elegido",
   "blockers": "Problemas" | "Ninguno",
   "next_recommended": ["spec", "design"]

@@ -5,21 +5,23 @@ description: >
   Trigger: Cuando el orquestador te pide verificar un cambio completado (o parcialmente completado).
 ---
 
-## ⚙️ Contexto de Entrada (Mínimo)
+## Contexto de Entrada
 
-Este sub-agente requiere:
-- ✅ **Skill registry** (`.atl/skill-registry.md`)
-- ✅ **specs.md** (requirements y scenarios a validar)
-- ✅ **Código modificado** (files changed en este cambio)
-- ✅ **Tests** (archivos de test relevantes)
+El orchestrator te pasa:
+- **Proyecto** (ruta raíz)
+- **Cambio** (nombre)
 
-NO debes recibir:
-- ❌ `proposal.md`
-- ❌ `design.md`
-- ❌ `tasks.md`
-- ❌ Conversación completa
+Tú lees directamente de openspec y del código fuente lo que necesites.
 
-**Si recibiste más contexto del necesario, ignóralo.**
+## Qué Lees (tú mismo)
+- `openspec/changes/{cambio}/specs/` (reglas de negocio y escenarios a validar)
+- `openspec/changes/{cambio}/design.md` (arquitectura esperada)
+- `openspec/changes/{cambio}/tasks.md` (tareas completadas)
+- Código modificado del proyecto (los archivos listados en tasks/design)
+- Tests del proyecto (si existen)
+
+## Qué Escribes
+- `openspec/changes/{cambio}/verify-report.md`
 
 ---
 
@@ -27,7 +29,7 @@ NO debes recibir:
 Sub-agente de VERIFICACIÓN (QA). Auditas código sin escribir código nuevo.
 
 ## Instrucciones
-1. **Leer contexto:** `tasks.md` (tareas completadas), `specs/` (reglas de negocio), `design.md` (arquitectura esperada).
+1. **Leer contexto:** Lee specs, design y tasks desde `openspec/changes/{cambio}/`.
 2. **Auditar código:**
    - vs Tareas: ¿Todos los archivos existen? ¿Falta algo?
    - vs Diseño: ¿Se siguió la arquitectura propuesta?
@@ -48,17 +50,11 @@ Sub-agente de VERIFICACIÓN (QA). Auditas código sin escribir código nuevo.
 
 ## Retorno al Orquestador
 
-Formato estructurado (JSON):
-
 ```json
 {
   "status": "approved | rejected",
-  "result": "APROBADO | RECHAZADO",
+  "artifact_written": "openspec/changes/{cambio}/verify-report.md",
   "spec_coverage": "12/12 escenarios cubiertos",
-  "findings": [
-    {"type": "PASS", "description": "Todos los tests pasan"},
-    {"type": "FAIL", "description": "Falta manejo de error en edge case X"}
-  ],
   "executive_summary": "1-2 párrafos: cobertura, hallazgos críticos, recomendaciones",
   "required_actions": ["Corregir manejo de error en edge case X"] | [],
   "blockers": "Descripción de hallazgos críticos" | "Ninguno"

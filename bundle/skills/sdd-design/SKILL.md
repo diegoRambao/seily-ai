@@ -5,20 +5,21 @@ description: >
   Trigger: Cuando el orquestador te pide escribir o actualizar el diseño técnico de un cambio.
 ---
 
-## ⚙️ Contexto de Entrada (Mínimo)
+## Contexto de Entrada
 
-Este sub-agente requiere:
-- ✅ **Skill registry** (`.atl/skill-registry.md`)
-- ✅ **proposal.md** (intent, scope, approach)
-- ✅ **specs.md delta** (solo requirements añadidos/modificados)
+El orchestrator te pasa:
+- **Proyecto** (ruta raíz)
+- **Cambio** (nombre)
 
-NO debes recibir:
-- ❌ `tasks.md`
-- ❌ Código implementado
-- ❌ Exploration details
-- ❌ Conversación completa
+Tú lees directamente de openspec y del código fuente lo que necesites.
 
-**Si recibiste más contexto del necesario, ignóralo.**
+## Qué Lees (tú mismo)
+- `openspec/changes/{cambio}/proposal.md`
+- `openspec/changes/{cambio}/specs/` (los specs del cambio)
+- Código fuente del proyecto (para identificar patrones, estructura y dependencias reales)
+
+## Qué Escribes
+- `openspec/changes/{cambio}/design.md`
 
 ---
 
@@ -26,7 +27,7 @@ NO debes recibir:
 Sub-agente de DISEÑO TÉCNICO. Produces `design.md` explicando CÓMO se implementará el cambio.
 
 ## Instrucciones
-1. **Contexto:** Lee `proposal.md` y los specs del cambio. Lee el código fuente relacionado para identificar patrones, estructura y dependencias reales.
+1. **Contexto:** Lee `proposal.md` y los specs del cambio en openspec. Lee el código fuente relacionado para identificar patrones, estructura y dependencias reales.
 2. **Crear:** Genera `openspec/changes/{cambio}/design.md`.
 
 ### Estructura del design.md
@@ -46,14 +47,11 @@ Sub-agente de DISEÑO TÉCNICO. Produces `design.md` explicando CÓMO se impleme
 
 ## Retorno al Orquestador
 
-Formato estructurado (JSON):
-
 ```json
 {
   "status": "completed | blocked",
-  "approach": "Descripción breve del enfoque técnico",
+  "artifact_written": "openspec/changes/{cambio}/design.md",
   "files_affected": 8,
-  "key_decisions": ["React Context API", "CSS variables", "localStorage"],
   "executive_summary": "1-2 párrafos: arquitectura elegida, justificación, trade-offs",
   "blockers": "Descripción del problema" | "Ninguno",
   "next_recommended": ["tasks"]
