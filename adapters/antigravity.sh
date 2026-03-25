@@ -12,7 +12,7 @@ ANTIGRAVITY_GLOBAL_DIR="$HOME/.gemini/antigravity"
 setup_antigravity_global() {
   log_section "Antigravity — Global"
 
-  ensure_dir "$ANTIGRAVITY_GLOBAL_DIR"
+  ensure_dir "$ANTIGRAVITY_GLOBAL_DIR/skills"
 
   # 1. Install skills
   log_info "Installing skills to ~/.gemini/antigravity/skills/..."

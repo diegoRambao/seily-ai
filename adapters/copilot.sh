@@ -18,6 +18,7 @@ setup_copilot_global() {
   # The best approach is to install into ~/.agents/skills which is the
   # cross-agent ecosystem used by skills.sh and consumed by Copilot.
   log_info "Installing skills to ~/.agents/skills/ (cross-agent ecosystem)..."
+  ensure_dir "$AGENTS_GLOBAL_DIR"
   install_skills_as_skillmd "$BUNDLE_DIR/skills" "$AGENTS_GLOBAL_DIR"
 
   # Update .skill-lock.json if it exists

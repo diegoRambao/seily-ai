@@ -16,7 +16,7 @@ KIRO_DIR="$HOME/.kiro"
 setup_kiro_global() {
   log_section "Kiro (AWS) — Global"
 
-  ensure_dir "$KIRO_DIR"
+  ensure_dir "$KIRO_DIR/skills"
 
   # 1. Install skills
   log_info "Installing skills to ~/.kiro/skills/..."

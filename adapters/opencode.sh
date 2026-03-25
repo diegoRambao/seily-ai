@@ -16,6 +16,7 @@ setup_opencode_global() {
 
   # 1. Install skills
   log_info "Installing skills..."
+  ensure_dir "$OPENCODE_CONFIG_DIR/skills"
   install_skills_as_skillmd "$BUNDLE_DIR/skills" "$OPENCODE_CONFIG_DIR/skills"
 
   # 2. Inject agents into opencode.json

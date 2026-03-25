@@ -15,7 +15,7 @@ CLAUDE_GLOBAL_SKILLS_DIR="$CLAUDE_DIR/skills"
 setup_claude_global() {
   log_section "Claude Code — Global"
 
-  ensure_dir "$CLAUDE_DIR"
+  ensure_dir "$CLAUDE_GLOBAL_SKILLS_DIR"
 
   # 1. Install skills
   log_info "Installing skills to ~/.claude/skills/..."
