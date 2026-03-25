@@ -1,0 +1,6 @@
+project:
+  name: ai-env-setup
+  stack: Bash 4+, Python3 (JSON manipulation)
+  test_command: null
+sdd:
+  artifact_store: openspec

@@ -2,14 +2,14 @@
 # adapters/kiro.sh — Adapter for Kiro (AWS IDE)
 #
 # Global:
-#   ~/.kiro/agents/<name>.md      (Kiro agent markdown format)
+#   ~/.kiro/agents/<name>.json    (Native JSON agent configs)
 #   ~/.kiro/skills/<name>/SKILL.md
 #   ~/.kiro/steering/sdd.md       (Steering document with SDD overview)
 #
 # Project:
-#   .kiro/agents/<name>.md  → agent markdown files
-#   .kiro/skills/           → symlink to $BUNDLE_DIR/skills
-#   .kiro/steering/         → generated SDD steering doc
+#   .kiro/agents/<name>.json → native JSON agent configs
+#   .kiro/skills/            → symlink to $BUNDLE_DIR/skills
+#   .kiro/steering/          → generated SDD steering doc
 
 KIRO_DIR="$HOME/.kiro"
 
@@ -22,9 +22,9 @@ setup_kiro_global() {
   log_info "Installing skills to ~/.kiro/skills/..."
   install_skills_as_skillmd "$BUNDLE_DIR/skills" "$KIRO_DIR/skills"
 
-  # 2. Install agents (converted to Kiro format)
-  log_info "Creating agent configs in ~/.kiro/agents/..."
-  install_agents_kiro "$BUNDLE_DIR/agents" "$KIRO_DIR/agents"
+  # 2. Install agents (native JSON files for Kiro)
+  log_info "Installing agent JSON configs to ~/.kiro/agents/..."
+  install_agents_kiro "$BUNDLE_DIR/agents/kiro" "$KIRO_DIR/agents"
 
   # 3. Create a steering document
   log_info "Generating steering document ~/.kiro/steering/sdd.md..."
@@ -42,9 +42,9 @@ setup_kiro_project() {
   ensure_dir "$project_dir/.kiro"
   safe_symlink "$link_path" "$BUNDLE_DIR/skills"
 
-  # 2. Install agents (converted to Kiro format)
-  log_info "Creating agent configs in .kiro/agents/..."
-  install_agents_kiro "$BUNDLE_DIR/agents" "$project_dir/.kiro/agents"
+  # 2. Install agents (native JSON files for Kiro)
+  log_info "Installing agent JSON configs to .kiro/agents/..."
+  install_agents_kiro "$BUNDLE_DIR/agents/kiro" "$project_dir/.kiro/agents"
 
   # 3. Generate steering document
   log_info "Generating .kiro/steering/sdd.md..."
@@ -54,7 +54,7 @@ setup_kiro_project() {
   log_info "Generating .kiro/kiro-instructions.md..."
   generate_instructions_md \
     "$BUNDLE_DIR/skills" \
-    "$BUNDLE_DIR/agents" \
+    "$BUNDLE_DIR/agents/kiro" \
     "$project_dir/.kiro/kiro-instructions.md" \
     "Kiro"
 
@@ -117,6 +117,19 @@ Load a skill explicitly when starting a relevant task:
 - `sdd-apply` — Code implementation
 - `sdd-verify` — Verification
 - `sdd-archive` — Archive completed change
+
+## Seily Memory (sailymem)
+
+Persistent memory CLI for AI agent sessions. Agents can store and retrieve
+decisions, snippets, and context across sessions.
+
+```bash
+sailymem add --type decision --content "..." --tags tag1,tag2
+sailymem search "query"
+sailymem list --last 10
+```
+
+If `sailymem` is not installed, agents continue without it.
 STEERING
 
   log_ok "Generated steering: $output"

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# install.sh — AI Environment Setup
+# install.sh — Seily: AI Environment Setup
 #
-# Installs the SDD agent bundle (skills + agents) for multiple AI coding tools.
+# Installs the SDD agent bundle (skills + agents) and Seily Memory (sailymem)
+# for multiple AI coding tools.
 #
 # Supported tools:
 #   OpenCode, Claude Code, Kiro (AWS), GitHub Copilot, Antigravity
@@ -325,6 +326,11 @@ _uninstall() {
   echo "    rm -rf ~/.kiro/skills/sdd-*    ~/.kiro/agents/sdd-orchestrator.json ~/.kiro/agents/tech-lead.json"
   echo "    rm -rf ~/.gemini/antigravity/skills/sdd-*"
   echo ""
+  echo "  Memory CLI:"
+  echo "    rm -f /usr/local/bin/sailymem"
+  echo "    rm -rf ~/Library/Application\\ Support/seily/  # macOS"
+  echo "    rm -rf ~/.config/seily/                        # Linux"
+  echo ""
   echo "  Project:"
   echo "    rm -rf .opencode/skills .claude/skills .kiro/skills .github/skills .agents/skills"
   echo "    rm -f CLAUDE.md .github/copilot-instructions.md .kiro/kiro-instructions.md"
@@ -374,10 +380,71 @@ _print_summary() {
   [[ "$SETUP_KIRO"        == "true" ]] && echo -e "    ${GREEN}✓${NC} Kiro (AWS)"
   [[ "$SETUP_COPILOT"     == "true" ]] && echo -e "    ${GREEN}✓${NC} GitHub Copilot"
   [[ "$SETUP_ANTIGRAVITY" == "true" ]] && echo -e "    ${GREEN}✓${NC} Antigravity"
+  command -v sailymem &>/dev/null && echo -e "    ${GREEN}✓${NC} Seily Memory (sailymem)"
   echo ""
   echo -e "  ${DIM}Restart your AI tools to load the new configuration.${NC}"
   echo -e "  ${DIM}Run with --dry-run to preview changes before applying.${NC}"
   echo ""
+}
+
+# =============================================================================
+# SAILYMEM: Build & install the `sailymem` binary
+# =============================================================================
+
+_install_sailymem() {
+  log_section "Seily Memory (sailymem)"
+
+  # Check if already installed and up to date
+  if command -v sailymem &>/dev/null; then
+    log_ok "sailymem already installed at $(command -v sailymem)"
+    return 0
+  fi
+
+  # Require Rust toolchain
+  if ! command -v cargo &>/dev/null; then
+    if [[ -f "$HOME/.cargo/env" ]]; then
+      source "$HOME/.cargo/env"
+    fi
+    if ! command -v cargo &>/dev/null; then
+      log_warn "Rust not found. Installing via rustup..."
+      if [[ "$DRY_RUN" == "true" ]]; then
+        log_dim "[dry-run] Would install Rust via rustup"
+      else
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --quiet
+        source "$HOME/.cargo/env"
+      fi
+    fi
+  fi
+
+  if [[ "$DRY_RUN" == "true" ]]; then
+    log_dim "[dry-run] Would build sailymem and install to /usr/local/bin/sailymem"
+    return 0
+  fi
+
+  local mem_src="$SCRIPT_DIR/memory-cli"
+  if [[ ! -f "$mem_src/Cargo.toml" ]]; then
+    log_error "sailymem source not found at $mem_src"
+    return 1
+  fi
+
+  log_info "Building sailymem (release)... this may take a minute on first run"
+  if cargo build --release --manifest-path "$mem_src/Cargo.toml"; then
+    local bin_path="$mem_src/target/release/sailymem"
+    local install_dir="/usr/local/bin"
+
+    if [[ -w "$install_dir" ]]; then
+      cp "$bin_path" "$install_dir/sailymem"
+    else
+      log_info "Requires sudo to install to $install_dir"
+      sudo cp "$bin_path" "$install_dir/sailymem"
+    fi
+    chmod +x "$install_dir/sailymem"
+    log_ok "sailymem installed to $install_dir/sailymem"
+  else
+    log_error "Failed to build sailymem. Skipping."
+    log_dim "You can build manually: cd $mem_src && cargo build --release"
+    return 1
+  fi
 }
 
 # =============================================================================
@@ -399,6 +466,7 @@ main() {
   _validate
   resolve_bundle_dir
 
+  _install_sailymem
   _run_adapters
   _print_summary
 }

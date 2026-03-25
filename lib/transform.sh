@@ -99,77 +99,39 @@ PYEOF
 }
 
 # =============================================================================
-# AGENTS: Kiro (create agents/*.md files in markdown format)
+# AGENTS: Kiro (install native JSON agent files)
 # =============================================================================
 
-# Transform bundle agent JSON files into Kiro-compatible agent markdown configs.
-# Usage: install_agents_kiro <bundle_agents_dir> <kiro_agents_dir>
+# Install Kiro-specific agent JSON files directly.
+# Usage: install_agents_kiro <kiro_bundle_agents_dir> <kiro_agents_dir>
 install_agents_kiro() {
-  local src="$1"   # e.g. $BUNDLE_DIR/agents
+  local src="$1"   # e.g. $BUNDLE_DIR/agents/kiro
   local dst="$2"   # e.g. ~/.kiro/agents
 
-  require_python3 || return 1
   ensure_dir "$dst"
 
+  local count=0
   for agent_file in "$src"/*.json; do
     [[ -f "$agent_file" ]] || continue
 
-    local agent_name
-    agent_name="$(python3 -c "import json,sys; d=json.load(open('$agent_file')); print(d['name'])")"
-    local kiro_file="$dst/${agent_name}.md"
+    local filename
+    filename="$(basename "$agent_file")"
+    local dst_file="$dst/$filename"
 
-    if [[ -f "$kiro_file" ]]; then
-      backup_if_exists "$kiro_file"
+    if [[ -f "$dst_file" ]]; then
+      backup_if_exists "$dst_file"
     fi
 
     if [[ "$DRY_RUN" == "true" ]]; then
-      log_dim "[dry-run] Would create Kiro agent: $kiro_file"
-      continue
+      log_dim "[dry-run] Would install Kiro agent: $dst_file"
+    else
+      safe_copy "$agent_file" "$dst_file"
+      log_ok "Installed Kiro agent: $filename"
     fi
-
-    python3 - "$agent_file" "$kiro_file" <<'PYEOF'
-import json, sys
-
-src_path = sys.argv[1]
-dst_path = sys.argv[2]
-
-with open(src_path) as f:
-    src = json.load(f)
-
-name = src.get("name", "Unknown Agent")
-desc = src.get("description", "")
-desc_escaped = desc.replace('"', '\\"')
-prompt = src.get("prompt", "")
-
-tools = src.get("tools", [])
-if isinstance(tools, dict):
-    tools = list(tools.keys())
-tools_str = ", ".join(tools)
-
-tools_yaml = ""
-if tools_str:
-    tools_yaml = f"tools: {tools_str}\n"
-
-model_line = ""
-if "model" in src:
-    model_line = f"model: {src['model']}\n"
-elif "toolsSettings" in src and "model" in src["toolsSettings"]:
-    model_line = f"model: {src['toolsSettings']['model']}\n"
-
-content = f"""---
-name: {name}
-description: "{desc_escaped}"
-{tools_yaml}{model_line.strip()}
----
-
-{prompt}
-"""
-
-with open(dst_path, "w") as f:
-    f.write(content)
-PYEOF
-    log_ok "Created Kiro agent: $agent_name"
+    count=$(( count + 1 ))
   done
+
+  log_info "Installed $count Kiro agents to $dst"
 }
 
 # =============================================================================

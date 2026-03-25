@@ -1,0 +1,10 @@
+/Users/andres.rambao/Documents/dev/ai-env-setup/memory-cli/target/release/deps/hashlink-a70cac17f81644ff.d: /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hashlink-0.9.1/src/lib.rs /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hashlink-0.9.1/src/linked_hash_map.rs /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hashlink-0.9.1/src/linked_hash_set.rs /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hashlink-0.9.1/src/lru_cache.rs
+
+/Users/andres.rambao/Documents/dev/ai-env-setup/memory-cli/target/release/deps/libhashlink-a70cac17f81644ff.rlib: /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hashlink-0.9.1/src/lib.rs /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hashlink-0.9.1/src/linked_hash_map.rs /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hashlink-0.9.1/src/linked_hash_set.rs /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hashlink-0.9.1/src/lru_cache.rs
+
+/Users/andres.rambao/Documents/dev/ai-env-setup/memory-cli/target/release/deps/libhashlink-a70cac17f81644ff.rmeta: /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hashlink-0.9.1/src/lib.rs /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hashlink-0.9.1/src/linked_hash_map.rs /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hashlink-0.9.1/src/linked_hash_set.rs /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hashlink-0.9.1/src/lru_cache.rs
+
+/Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hashlink-0.9.1/src/lib.rs:
+/Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hashlink-0.9.1/src/linked_hash_map.rs:
+/Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hashlink-0.9.1/src/linked_hash_set.rs:
+/Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hashlink-0.9.1/src/lru_cache.rs:

@@ -1,0 +1,10 @@
+/Users/andres.rambao/Documents/dev/ai-env-setup/memory-cli/target/release/deps/icu_normalizer-32d5dff3e02fcd82.d: /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/lib.rs /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/properties.rs /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/provider.rs /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/uts46.rs
+
+/Users/andres.rambao/Documents/dev/ai-env-setup/memory-cli/target/release/deps/libicu_normalizer-32d5dff3e02fcd82.rlib: /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/lib.rs /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/properties.rs /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/provider.rs /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/uts46.rs
+
+/Users/andres.rambao/Documents/dev/ai-env-setup/memory-cli/target/release/deps/libicu_normalizer-32d5dff3e02fcd82.rmeta: /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/lib.rs /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/properties.rs /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/provider.rs /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/uts46.rs
+
+/Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/lib.rs:
+/Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/properties.rs:
+/Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/provider.rs:
+/Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/uts46.rs:

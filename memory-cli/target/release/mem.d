@@ -1,0 +1,1 @@
+/Users/andres.rambao/Documents/dev/ai-env-setup/memory-cli/target/release/mem: /Users/andres.rambao/Documents/dev/ai-env-setup/memory-cli/src/db.rs /Users/andres.rambao/Documents/dev/ai-env-setup/memory-cli/src/main.rs /Users/andres.rambao/Documents/dev/ai-env-setup/memory-cli/src/types.rs

@@ -77,8 +77,12 @@ backup_if_exists() {
 # Ensure a directory exists (no-op if it already does).
 ensure_dir() {
   local dir="$1"
+  # Remove blocking file or broken symlink before creating directory
+  if [[ -e "$dir" && ! -d "$dir" ]] || [[ -L "$dir" && ! -d "$dir" ]]; then
+    run_cmd rm -f "$dir"
+  fi
   if [[ ! -d "$dir" ]]; then
-    run_cmd mkdir -p "$dir"
+    mkdir -p "$dir"
     log_info "Created directory: $dir"
   fi
 }

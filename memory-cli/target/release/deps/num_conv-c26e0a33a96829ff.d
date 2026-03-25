@@ -1,0 +1,7 @@
+/Users/andres.rambao/Documents/dev/ai-env-setup/memory-cli/target/release/deps/num_conv-c26e0a33a96829ff.d: /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/num-conv-0.2.1/src/lib.rs
+
+/Users/andres.rambao/Documents/dev/ai-env-setup/memory-cli/target/release/deps/libnum_conv-c26e0a33a96829ff.rlib: /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/num-conv-0.2.1/src/lib.rs
+
+/Users/andres.rambao/Documents/dev/ai-env-setup/memory-cli/target/release/deps/libnum_conv-c26e0a33a96829ff.rmeta: /Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/num-conv-0.2.1/src/lib.rs
+
+/Users/andres.rambao/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/num-conv-0.2.1/src/lib.rs:
