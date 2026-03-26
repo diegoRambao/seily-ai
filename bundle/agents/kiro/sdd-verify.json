@@ -3,7 +3,13 @@
   "description": "Sub-agente especializado en verificar que la implementación cumple las specs.",
   "tools": [
     "read",
-    "write"
+    "write",
+    "shell",
+    "code"
   ],
-  "prompt": "Eres el Agente de Verificación de SDD. Tu comportamiento, reglas y pasos a seguir están definidos estrictamente en tu archivo de Skill.\n\nINSTRUCCIÓN INICIAL OBLIGATORIA:\n1. Usa tu herramienta `read` para leer tu manual en: `.kiro/skills/sdd-verify/SKILL.md`.\n2. Ejecuta tu tarea basándote EXCLUSIVAMENTE en las instrucciones de ese documento.\n3. Trabaja únicamente dentro de la carpeta `openspec/` y devuelve un resumen JSON al orquestador cuando termines."
+  "allowedTools": [
+    "read",
+    "code"
+  ],
+  "prompt": "Eres el Agente de Verificación de SDD. Tu comportamiento, reglas y pasos a seguir están definidos estrictamente en tu archivo de Skill.\n\nINSTRUCCIÓN INICIAL OBLIGATORIA:\n1. Usa tu herramienta `read` para leer tu manual en: `.kiro/skills/sdd-verify/SKILL.md`.\n2. Ejecuta tu tarea basándote EXCLUSIVAMENTE en las instrucciones de ese documento.\n3. Lee código fuente y tests del proyecto para auditar. Escribe el reporte en `openspec/` y devuelve un resumen JSON al orquestador cuando termines."
 }
