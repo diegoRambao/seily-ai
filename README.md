@@ -1,4 +1,4 @@
-# Seily-AI
+# Seily-AI 
 
 Your AI development companion. Installs the SDD (Spec-Driven Development) agent bundle — skills, agents, and **Seily Memory** (`sailymem`) — across multiple AI coding tools with a single command.
 
